@@ -116,6 +116,37 @@ let countInRow (row: char array) (i: int) =
     Array.mapi (fun j el -> if el <> 'X' then 0 else isStartXmas i j) row
     |> Array.sum
 
+let countXMasRow (row: char array) (i: int) =
+    let isXMas i j =
+        if
+            (letters.[i - 1].[j - 1] = 'M' && letters.[i + 1].[j + 1] = 'S'
+             || letters.[i - 1].[j - 1] = 'S' && letters.[i + 1].[j + 1] = 'M')
+            && (letters.[i + 1].[j - 1] = 'M' && letters.[i - 1].[j + 1] = 'S'
+                || letters.[i + 1].[j - 1] = 'S' && letters.[i - 1].[j + 1] = 'M')
+        then
+            1
+        else
+            0
+
+    Array.mapi
+        (fun j el ->
+            if el = 'A' && j > 0 && j < row.Length - 1 then
+                isXMas i j
+            else
+                0)
+        row
+    |> Array.sum
+
+let countXMas row i =
+    if i > 0 && i < letters.Length - 1 then
+        countXMasRow row i
+    else
+        0
+
 let part1 = letters |> Array.mapi (fun i row -> countInRow row i) |> Array.sum
 
 printfn "Day 4, Part 1: %A" part1
+
+let part2 = letters |> Array.mapi (fun i row -> countXMas row i) |> Array.sum
+
+printfn "Day 4, Part 2: %A" part2
